@@ -147,11 +147,11 @@ function editarStock(req,res) {
     if (verificacion == 'ROL_ADMIN') {
         Producto.findById(idProducto, (err, productoEnc) => {
             if (!productoEnc) return res.status(404).send({message: 'ALGO SALIO MAL AL INTENTAR OBTENER LOS DATOS'});
-            if(parametros.stock <= 0){
+            if(parametros.cantidad <= 0){
                 if(Number(productoEnc.cantidad) + Number(parametros.cantidad) <0){
                     return res.status(500).send({message:'LA CANTIDAD QUE SE DESEA QUITAR SOBREPASA A LA CANTIDAD ACTUAL'});
                 } else {
-                    Producto.findByIdAndUpdate(idProducto, { $inc :{stock:parametros.stock}},{new: true},(err, productoU)=>{
+                    Producto.findByIdAndUpdate(idProducto, { $inc :{cantidad: parametros.cantidad}},{new: true},(err, productoU)=>{
                         if(err) return res.status(404).send({message: 'HA OCURRIDO UN ERROR EN LA SOLICITUD'});
                         if(!productoU) return res.status(500).send({message:'ALGO SALIO MAL AL INTENTAR EDITAR LA CANTIDAD'});
         
@@ -159,7 +159,7 @@ function editarStock(req,res) {
                     });
                 }
             } else {
-                Producto.findByIdAndUpdate(idProducto, { $inc :{stock:parametros.stock}},{new: true},(err, productoU)=>{
+                Producto.findByIdAndUpdate(idProducto, { $inc :{cantidad: parametros.cantidad}},{new: true},(err, productoU)=>{
                     if(err) return res.status(404).send({ message: 'HA OCURRIDO UN ERROR EN LA SOLICITUD' });
                     if(!productoU) return res.status(500).send({ message:'ALGO SALIO MAL AL INTENTAR EDITAR LA CANTIDAD' });
     
@@ -181,7 +181,7 @@ function verStock(req,res) {
         Producto.find({producto: nombreProducto},(err, productoEnc)=>{
             if (err) return res.status(500).send({ message: "HA OCURRIDO UN ERROR EN LA SOLICITUD" });
             if (!productoEnc) return res.status(400).send({ message: "ALGO SALIO MAL AL INTENTAR MOSTRAR LOS DATOS" });
-            return res.status(200).send({ stock: productoEnc[0].stock });
+            return res.status(200).send({ cantidad: productoEnc[0].cantidad });
         })        
     } else {
         return res.status(500).send({ message: "NO SE POSEEN LOS PERMISOS PARA REALIZAR ESTA SOLICITUD" });
